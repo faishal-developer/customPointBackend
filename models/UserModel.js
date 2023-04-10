@@ -22,12 +22,11 @@ const UserSchema = Schema(
         password:{
             type:String,
             minlength:[6,'Password too short'],
-            required:true
         },
         roles:{
             type:[String],
             required:true,
-            default:['STUDENT']
+            default:['USER']
         },
         isDeleted:Boolean,
         phone:{

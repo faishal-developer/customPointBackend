@@ -10,7 +10,19 @@ const createJwtToken = (user) =>{
     return jwt.sign(user, 'secret-key', { expiresIn: '20h' });
 }
 
+const checkAndPush = (obj, updatableObjPro) => {
+    for (let keys in updatableObjPro) {
+        if (updatableObjPro[keys]) obj[keys] = updatableObjPro[keys];
+    }
+}
+
+const returnResponse = (data={},status=200,res)=>{
+    return res.status(status).json(data);
+}
+
 module.exports = {
     error,
-    createJwtToken
+    createJwtToken,
+    checkAndPush,
+    returnResponse
 }

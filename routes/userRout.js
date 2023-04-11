@@ -1,10 +1,9 @@
 const userController = require('../controller/user_Cr');
 const router = require('express').Router();
 const {authenticate} = require('../middleWare/authenticate');
+
 // get multiple user by search parameter
-router.post('/',()=>{
-    
-})
+router.post('/',authenticate,userController.getMultipleUser);
 
 // get single user by id
 router.get('/:id',userController.singleUser);
@@ -12,10 +11,10 @@ router.get('/:id',userController.singleUser);
 // create user during registration
 router.post('/create',userController.postUser);
 
-// delete user and user related information
-router.delete('/:id',()=>{});
+//todo: delete user and user related information
+router.delete('/:id',authenticate,userController.deleteUser);
 
 // update users information
-router.patch('/id',()=>{})
+router.patch('/:id',authenticate,userController.updateUser)
 
 module.exports = router;

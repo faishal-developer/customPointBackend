@@ -1,6 +1,8 @@
 const { model, Schema} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
+//todo: array length validation
+//todo: save timstaps as minutes
 const ProductSchema = Schema(
     {
         name: {
@@ -35,7 +37,12 @@ const ProductSchema = Schema(
         cat_id:{
             type:Schema.Types.ObjectId,
             ref:schematypes.cat,
-            required:true
+            //todo: required:true
+        },
+        subCat_id:{
+            type:Schema.Types.ObjectId,
+            ref:schematypes.sub_cat,
+            //todo: required:true
         },
         order_track:{
             type:Number,

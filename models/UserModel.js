@@ -1,6 +1,7 @@
 const {model,Schema, default: mongoose} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
+//todo: save timstaps as minutes
 const UserSchema = Schema(
     {
         name:{
@@ -59,6 +60,7 @@ const UserSchema = Schema(
             type: [String],
             maxlength:[15,"SearchList length must be between 15"]
         },
+        //productids is user cart list saved by id
         productsIds: [{
             type: Schema.Types.ObjectId,
             ref: schematypes.product

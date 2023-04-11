@@ -1,8 +1,8 @@
 const { model, Schema } = require('mongoose')
 const schematypes = require('./allSchemaTypes')
 
-const CategorySchema = Schema(
-    {
+const SubCategorySchema = Schema(
+    { 
         name: {
             type: String,
             required: true,
@@ -17,7 +17,8 @@ const CategorySchema = Schema(
         },
         cat_id:{
             type:Schema.Types.ObjectId,
-            ref:schematypes.cat
+            ref:schematypes.cat,
+            required:true
         },
         order_tracker: [Number]
     },
@@ -26,5 +27,5 @@ const CategorySchema = Schema(
     }
 )
 
-const CategoryModel = model(schematypes.cat, CategorySchema);
-module.exports = CategoryModel;
+const SubCategoryModel = model(schematypes.cat, SubCategorySchema);
+module.exports = SubCategoryModel;

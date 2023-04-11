@@ -16,7 +16,7 @@ const checkAndPush = (obj, updatableObjPro) => {
     }
 }
 
-const returnResponse = (data={},status=200,res)=>{
+const Response = (data={},status=200,res)=>{
     return res.status(status).json(data);
 }
 
@@ -24,5 +24,5 @@ module.exports = {
     error,
     createJwtToken,
     checkAndPush,
-    returnResponse
+    Response
 }

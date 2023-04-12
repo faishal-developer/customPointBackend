@@ -1,8 +1,9 @@
-const router = require('express').Router();
-const authenticate = require('../middleWare/authenticate');
 const subCatController = require('../controller/SubCat_cr');
+const router = require('express').Router();
+const {authenticate} = require('../middleWare/authenticate');
 
 //create a sub category
+console.log(authenticate,subCatController.createSubCat);
 router.post('/',authenticate,subCatController.createSubCat);
 
 //get a single subcategory

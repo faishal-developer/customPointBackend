@@ -2,13 +2,19 @@ const { model, Schema } = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
 const TransactionSchema = Schema({
+    cashing_system: {
+        type: String,
+        enum: ["HAND ON DELIVERY", "PAID"],
+        default: 'PAID',
+        required: true
+    },
     paymentAmount: {
         type: Number,
-        required: true
+        required: true,
     },
     paymentMethod: {
         type: String,
-        required: true
+        required: function () { return this.cashing_system === 'PAID' }
     },
     transactionDate: {
         type: Date,
@@ -82,23 +88,17 @@ const OrderSchema = Schema(
         courier:String,
         comments: {
             type: String,
-            required: true,
             minlength: [5, "Name should be at least 5 charecters"],
             maxlength: [80, "Name should be at most 80 charecters"],
         },
         phone: {
             type: String,
+            required:true,
             minlength: 9,
             maxlength: 12,
         },
         transaction: {
             type: TransactionSchema,
-        },
-        cashing_system:{
-            type:String,
-            enum:["HAND ON DELIVERY","PAID"],
-            default:'PAID',
-            required:true
         },
         address:{
             type: AddressSchema,

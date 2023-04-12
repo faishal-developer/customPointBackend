@@ -27,5 +27,5 @@ const SubCategorySchema = Schema(
     }
 )
 
-const SubCategoryModel = model(schematypes.cat, SubCategorySchema);
+const SubCategoryModel = model(schematypes.sub_cat, SubCategorySchema);
 module.exports = SubCategoryModel;

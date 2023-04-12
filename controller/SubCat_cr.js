@@ -1,5 +1,5 @@
-const SubCategoryModel = require("../models/SubCatModel");
-const dbOperation = require("../service/Operation");
+const SubCategoryModel = require('../models/SubCatModel');
+const dbOperation = require('../service/Operation');
 const { error, Response, checkAndPush } = require("../utils/commonFunc");
 
 const createSubCat = async (req,res,next) =>{
@@ -10,7 +10,7 @@ const createSubCat = async (req,res,next) =>{
         const isExisted = await dbOperation.findSingleDataDb(SubCategoryModel,'name',subcat.name);
         if(!isExisted) throw error("Subcategory allready existed",400);
         subcat = await dbOperation.saveToDb(subcat);
-        return Response(subcat,201,res);
+         Response(subcat,201,res);
     }catch(e){
         next(e);
     }

@@ -3,6 +3,9 @@ const dbOperation = require("../service/Operation");
 const { error, checkAndPush } = require("../utils/commonFunc");
 
 //todo: unique product identify
+//todo: add category id and subcat id here
+//todo:check uniqeness
+//todo:why schema validation is not working when i save string instead of number
 const createProduct = async(req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
@@ -52,7 +55,8 @@ const deleteOne = async(req,res,next) =>{
     }
 }
 
-
+//todo: it is not working as per as schema validation
+//todo: for wrong objectid we should provide 404 error
 const updateOne = async(req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);

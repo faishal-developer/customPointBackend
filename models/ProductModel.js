@@ -3,6 +3,7 @@ const schematypes = require('./allSchemaTypes');
 
 //todo: array length validation
 //todo: save timstaps as minutes
+//todo: make cat_id and subcat_id required
 const ProductSchema = Schema(
     {
         name: {
@@ -24,7 +25,7 @@ const ProductSchema = Schema(
             maxlength: [5, "Maximum 5 image allowed"],
         },
         price:{
-            type:String,
+            type:Number,
             required:true,
             validate: {
                 validator: function (v) {

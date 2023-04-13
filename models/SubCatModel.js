@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose')
 const schematypes = require('./allSchemaTypes')
 
-const SubCategorySchema = Schema(
+const SubCategorySchema = new Schema(
     { 
         name: {
             type: String,
@@ -23,7 +23,9 @@ const SubCategorySchema = Schema(
         order_tracker: [Number]
     },
     {
-        timestamps: true
+        timestamps: {
+            currentTime: () => Math.floor(Date.now() / 3600000)
+        }
     }
 )
 

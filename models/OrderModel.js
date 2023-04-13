@@ -106,7 +106,9 @@ const OrderSchema = Schema(
         }
     },
     {
-        timestapms:true,
+        timestamps: {
+            currentTime: () => Math.floor(Date.now() / 3600000)
+        }
     }
 )
 

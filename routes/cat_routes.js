@@ -11,8 +11,7 @@ router.get('/:id', authenticate,categoryController.getSingleCategory);
 // create user during registration
 router.post('/create',authenticate,categoryController.createCategory);
 
-//todo: delete user and user related information
-router.delete('/:id', authenticate, );
+router.delete('/:id', authenticate,categoryController.deleteSingleCat );
 
 // update users information
 router.patch('/:id', authenticate,categoryController.updateCategory);

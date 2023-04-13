@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(router);
 
-// todo:generate log file
+// todoLater:generate log file
 app.get('/',(_req,res)=>{
     res.json({message:'server is running'});
 })

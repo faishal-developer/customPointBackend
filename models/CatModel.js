@@ -1,19 +1,19 @@
 const { model, Schema } = require('mongoose')
 const schematypes = require('./allSchemaTypes')
 
-const CategorySchema = Schema(
+const CategorySchema = new Schema(
     {
         name: {
             type: String,
             required: true,
-            minlength: [3, "Name should be at least 3 charecters"],
+            minlength: [5, "Name should be at least 5 charecters"],
             maxlength: [15, "Name should be at most 15 charecters"],
         },
         desc: {
             type: String,
             required: true,
-            minlength: [20, "Name should be at least 20 charecters"],
-            maxlength: [100, "Name should be at most 100 charecters"],
+            minlength: [20, "Description should be at least 20 charecters"],
+            maxlength: [100, "Description should be at most 100 charecters"],
         },
         sub_cat_list:[{
             type:Schema.Types.ObjectId,
@@ -22,7 +22,9 @@ const CategorySchema = Schema(
         order_tracker:[Number]
     },
     {
-        timestamps: true
+        timestamps: {
+            currentTime: () => Math.floor(Date.now() / 3600000)
+        }
     }
 )
 

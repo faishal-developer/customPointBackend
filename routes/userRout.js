@@ -11,7 +11,6 @@ router.get('/:id',userController.singleUser);
 // create user during registration
 router.post('/create',userController.postUser);
 
-//todo: delete user and user related information
 router.delete('/:id',authenticate,userController.deleteUser);
 
 // update users information

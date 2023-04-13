@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/UserModel');
-const { error } = require('../utils/commonFunc');
+const Config = require('../utils/Config');
 
 async function authenticate(req,res,next){
     try{
@@ -10,10 +10,9 @@ async function authenticate(req,res,next){
         }
         token = token.split(" ")[1];
 
-        // todo:make secure jwt by changing 'secret-key'
-        const decoded = jwt.verify(token, 'secret-key');
+        // hope:make secure jwt by changing 'secret-key'
+        const decoded = jwt.verify(token, Config.secret);
         const user = await User.findById(decoded._id);
-        console.log(user);
         if (!user) {
             return res.status(401).json({ message: 'Unauthorized' });
         }

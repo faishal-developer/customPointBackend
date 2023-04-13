@@ -1,8 +1,8 @@
 const {model,Schema, default: mongoose} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
-//todo: save timstaps as minutes
-const UserSchema = Schema(
+//hope: save timstaps as hours
+const UserSchema = new Schema(
     {
         name:{
             type:String,
@@ -66,7 +66,11 @@ const UserSchema = Schema(
             ref: schematypes.product
         }],
     },
-    {timestamps:true}
+    {
+        timestamps: {
+            currentTime: () => Math.floor(Date.now() / 3600000)
+        }
+    }
 )
 
 let UserMoel = model(schematypes.user,UserSchema);

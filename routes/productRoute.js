@@ -2,7 +2,6 @@ const router = require('express').Router();
 const { authenticate } = require('../middleWare/authenticate');
 const productController = require('../controller/Product_cr');
 
-//todo: immidiate testing all api of product routes
 // create a single product
 router.post('/create',authenticate ,productController.createProduct);
 

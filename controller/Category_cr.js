@@ -1,48 +1,78 @@
 const CategoryModel = require("../models/CatModel");
+const SubcategoryModel = require("../models/allSchemaTypes");
 const dbOperation = require('../service/Operation');
-const { error, returnResponse } = require("../utils/commonFunc");
+const { error, Response, checkAndPush } = require("../utils/commonFunc");
 
-// todo: test
 const createCategory = async(req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
         const {name,desc} = req.body;
-        let category = CategoryModel({name,desc})
-        const isExisted = await dbOperation.findSingleDataDb(category,'name',name);
-        if(isExisted.name === name) throw error("Category name already exist",400);
+        let category = new CategoryModel({name,desc})
+        const isExisted = await dbOperation.findSingleDataDb(CategoryModel,'name',name);
+        if(isExisted?.name === name) throw error("Category name already exist",400);
         category = await dbOperation.saveToDb(category);
-        return returnResponse({ message: 'Category created successfully', category },201,res);
+        return Response({ message: 'Category created successfully', category },201,res);
     }catch(e){
         next(e)
     }
 }
 
-//todo: testing
 const getSingleCategory = async(req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
         const {id} = req.params;
         const category = await dbOperation.findSingleDataDb(CategoryModel,'_id',id);
         if(!category)throw error('Category not found',404);
-        return returnResponse({category},200,res);
+        return Response({category},200,res);
     }catch(e){
         next(e);
     }
 }
-
-//todo: implement later
+//hope
 const getMultiple = async(req,res,next) =>{
     try{
         let {limit,page} = req.query;
+        if(!limit){
+            limit = 10;
+        }
+        if(!page){
+            page = 1;
+        }
         let query = {};
-        let searchableObj = req.body;
+        let {name,createdAt,updatedAt,ids} = req.body;
+        if (name) query.name = { $exists: true };
+        if (createdAt) {
+            query.createdAt = {};
+            if(createdAt.after){
+                query.createdAt['$gt'] =  createdAt.after;
+            }
+            if(createdAt.before){
+                query.createdAt['$lt'] =  createdAt.before;
+            }
+        }
+        if (updatedAt) {
+            query.updatedAt = {};
+            if(updatedAt.after){
+                query.updatedAt['$gt'] =  updatedAt.after;
+            }
+            if(updatedAt.before){
+                query.updatedAt['$lt'] =  updatedAt.before;
+            }
+        }
+        if(ids){
+            query['_id'] = {$in:ids };
+        }
+
+        const categories = await dbOperation.getMultipleData(CategoryModel,query,limit,page);
+        Response(categories,200,res);
 
     }catch(e){
         next(e);
     }
 }
 
-//todo: check if wrong data provided and validate if updated
+//hope: check if wrong data provided and validate if updated
+//hope:schema validation is not working.
 const updateCategory = async(req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
@@ -50,22 +80,22 @@ const updateCategory = async(req,res,next) =>{
         const data = req.body;
         const updatableObj = {};
         checkAndPush(updatableObj,data);
-        let updated = await dbOperation.updateSingleData(CategoryModel,{'_id':id},updatableObj);
-        return returnResponse(updated,200,res);
+        await dbOperation.updateSingleData(CategoryModel,{'_id':id},updatableObj,res);
     }catch(e){
         next(e);
     }
 }
 
-//todo:test
-//todo: delete sub categories also;
+//todoLater: update products category field, related with deleted category
 const deleteSingleCat =async (req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
         const {id} = req.params;
         const category = await dbOperation.removeSingleData(CategoryModel,id);
         if(!category)throw error('Category not found',404);
-        returnResponse({},203);
+        //hope:console.log category , if category found then delete all subcategories also
+        await dbOperation.removeMultiple(SubcategoryModel, category.sub_cat_list);
+        Response({message:'Successfull'},203,res);
     }catch(e){
         next(e);
     }

@@ -8,7 +8,7 @@ const createSubCat = async (req,res,next) =>{
         const {name,desc,cat_id} = req.body;
         let subcat = new SubCategoryModel({name,desc,cat_id});
         const isExisted = await dbOperation.findSingleDataDb(SubCategoryModel,'name',subcat.name);
-        if(!isExisted) throw error("Subcategory allready existed",400);
+        if(isExisted?.name === name) throw error("Subcategory allready existed",400);
         subcat = await dbOperation.saveToDb(subcat);
          Response(subcat,201,res);
     }catch(e){
@@ -19,25 +19,56 @@ const createSubCat = async (req,res,next) =>{
 const getSingle = async(req,res,next)=>{
     try{
         const {id} = req.params;
+        console.log("id",id);
         const subCat = await dbOperation.findSingleDataDb(SubCategoryModel,'_id',id);
-        if(!subcat) throw error('Subcat not found',404);
+        if(!subCat) throw error('Subcat not found',404);
         return Response(subCat,200,res);
     }catch(e){
         next(e);
     }
 }
 
-//todo: getMultiple by id
+//hope: getMultiple by id
 const getMultiple = async (req,res,next) =>{
-    try{
-        //todo: full
-    }catch(e){
+    try {
+        let { limit, page } = req.query;
+        if (!limit) {
+            limit = 10;
+        }
+        if (!page) {
+            page = 1;
+        }
+        let query = {};
+        let { name, createdAt, updatedAt } = req.body;
+        if (name) query.name = { $exists: true };
+        if (createdAt) {
+            query.createdAt = {};
+            if (createdAt.after) {
+                query.createdAt['$gt'] = createdAt.after;
+            }
+            if (createdAt.before) {
+                query.createdAt['$lt'] = createdAt.before;
+            }
+        }
+        if (updatedAt) {
+            query.updatedAt = {};
+            if (updatedAt.after) {
+                query.updatedAt['$gt'] = updatedAt.after;
+            }
+            if (updatedAt.before) {
+                query.updatedAt['$lt'] = updatedAt.before;
+            }
+        }
+        const SubCategories = await dbOperation.getMultipleData(SubCategoryModel, query, limit, page);
+        Response(SubCategories, 200, res);
+
+    } catch(e){
         next(e);
     }
 }
 
 
-//todo: api testing for falsy value;
+//hope: api testing for falsy value;
 const updateOne = async(req,res,next) =>{
     try{
         const {id} = req.params;
@@ -45,8 +76,7 @@ const updateOne = async(req,res,next) =>{
         if(!id)throw error("Subcategory not found",404);
         const payload = req.body;
         checkAndPush(query,payload);
-        const updatedData = await dbOperation.updateSingleData(SubCategoryModel,{"_id":id},query);
-        Response(updatedData,201,res);
+        await dbOperation.updateSingleData(SubCategoryModel, { '_id': id }, query, res);
     }catch(e){
         next(e);
     }

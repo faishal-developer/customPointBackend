@@ -3,7 +3,7 @@ const UserModel = require('../models/UserModel');
 const commonFunc = require('../utils/commonFunc');
 const { query } = require('express');
 
-//todo: make secure during creating admin user
+//todoLater: make secure during creating admin user
 const postUser = async(req,res,next)=>{
     const { email, name, roles, age, gender } = req.body;
     try {
@@ -29,8 +29,8 @@ const postUser = async(req,res,next)=>{
     }
 }
 
-//todo:make two different route for get user and login
-//todo:send jwt token by api header
+//todoLater:make two different route for get user and login
+//todoLater:send jwt token by api header
 const singleUser = async(req,res,next)=>{
     try{
         const id = req.params.id;
@@ -48,7 +48,7 @@ const singleUser = async(req,res,next)=>{
     }
 }
 
-//todo: create query by createdAt
+//hope: create query by createdAt
 const getMultipleUser = async(req,res,next)=>{
     try{
         if(!req.user.roles.includes('ADMIN')) throw error("User can't access",401);
@@ -58,18 +58,25 @@ const getMultipleUser = async(req,res,next)=>{
         skip = page ? (page - 1) * limit : 0;
 
         const newQ = {};
-        if (createdAt) newQ.createdAt = createdAt;
         if (name) newQ.name = name;
         if (email) newQ.email = email;
-
-        const results = await dbOperation.getMultipleData(UserModel,newQ,limit);
+        if (createdAt) {
+            query.createdAt = {};
+            if (createdAt.after) {
+                query.createdAt['$gt'] = createdAt.after;
+            }
+            if (createdAt.before) {
+                query.createdAt['$lt'] = createdAt.before;
+            }
+        }
+        const results = await dbOperation.getMultipleData(UserModel,newQ,limit,page);
         res.status(200).json({message:"ok",results});
     }catch(e){
         next(e);
     }
 }
 
-//todo: update roles by checking admin authentication
+//hope: update roles by checking admin authentication
 const updateUser = async(req,res,next)=>{
     const { name, phone, age, gender, productsIds } = req.body;
     const {id} = req.params;
@@ -81,13 +88,7 @@ const updateUser = async(req,res,next)=>{
         if(phone) query.phone = phone;
         if(gender) query.gender = gender;
         if(productsIds) query.productsIds = productsIds;
-
-        let user = await dbOperation.updateSingleData(UserModel,{'_id':id},query);
-        //todo:if user insertion 0 then throw error
-        if(!user){
-            throw commonFunc.error("User not found",404);
-        }
-        res.status(200).json({message:'ok',user});
+        await dbOperation.updateSingleData(UserModel, { '_id': id }, query, res);
     }catch(e){
         next(e);
     }
@@ -99,7 +100,7 @@ const deleteUser = async(req,res,next)=>{
         const {id} = req.params;
         const user = await dbOperation.removeSingleData(UserModel,id);
 
-        //todo: delete user orders
+        //todoLater: delete user orders
         if(!user) throw commonFunc.error("User not found",404);
         res.status(203).send();
     }catch(e){

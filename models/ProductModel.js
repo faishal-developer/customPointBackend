@@ -1,10 +1,10 @@
 const { model, Schema} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
-//todo: array length validation
-//todo: save timstaps as minutes
-//todo: make cat_id and subcat_id required
-const ProductSchema = Schema(
+//hope: array length validation
+//hope: save timstaps as minutes
+//hope: make cat_id and subcat_id required
+const ProductSchema = new Schema(
     {
         name: {
             type: String,
@@ -21,8 +21,12 @@ const ProductSchema = Schema(
         images:{
             type:[String],
             required:true,
-            minlength: [1, "Minimum 1 image required"],
-            maxlength: [5, "Maximum 5 image allowed"],
+            validate: {
+                validator: function (v) {
+                    return v.length >=1 && v.length<=5;
+                },
+                message: props => `${props.path} Should have length between 1 to 10`
+            }
         },
         price:{
             type:Number,
@@ -38,12 +42,12 @@ const ProductSchema = Schema(
         cat_id:{
             type:Schema.Types.ObjectId,
             ref:schematypes.cat,
-            //todo: required:true
+            required:true
         },
         subCat_id:{
             type:Schema.Types.ObjectId,
             ref:schematypes.sub_cat,
-            //todo: required:true
+            required:true
         },
         order_track:{
             type:Number,
@@ -53,7 +57,11 @@ const ProductSchema = Schema(
         sizes:[String],
         color:[String]
     },
-    {timestapms:true}
+    {
+        timestamps: {
+            currentTime: () => Math.floor(Date.now() / 3600000)
+        }
+    }
 );
 
 const ProductModel = model(schematypes.product,ProductSchema);

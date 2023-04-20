@@ -19,11 +19,14 @@ const CategorySchema = new Schema(
             type:Schema.Types.ObjectId,
             ref:schematypes.sub_cat
         }],
-        order_tracker:[Number]
-    },
-    {
-        timestamps: {
-            currentTime: () => Math.floor(Date.now() / 3600000)
+        order_tracker:[Number],
+        createdAT: {
+            type: Number,
+            required: true
+        },
+        updatedAT: {
+            type: Number,
+            required: true
         }
     }
 )

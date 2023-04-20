@@ -1,13 +1,14 @@
 const CategoryModel = require("../models/CatModel");
 const SubcategoryModel = require("../models/allSchemaTypes");
 const dbOperation = require('../service/Operation');
-const { error, Response, checkAndPush } = require("../utils/commonFunc");
+const { error, Response, checkAndPush, RealDateToTimeStamps } = require("../utils/commonFunc");
 
 const createCategory = async(req,res,next) =>{
     try{
         if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
         const {name,desc} = req.body;
-        let category = new CategoryModel({name,desc})
+        let time = RealDateToTimeStamps(new Date());
+        let category = new CategoryModel({name,desc,createdAT:time,updatedAT:time});
         const isExisted = await dbOperation.findSingleDataDb(CategoryModel,'name',name);
         if(isExisted?.name === name) throw error("Category name already exist",400);
         category = await dbOperation.saveToDb(category);
@@ -40,7 +41,7 @@ const getMultiple = async(req,res,next) =>{
         }
         let query = {};
         let {name,createdAt,updatedAt,ids} = req.body;
-        if (name) query.name = { $exists: true };
+        if (name) query.name = { $regex: name, $options: 'i' };
         if (createdAt) {
             query.createdAt = {};
             if(createdAt.after){
@@ -79,6 +80,7 @@ const updateCategory = async(req,res,next) =>{
         const {id} = req.params;
         const data = req.body;
         const updatableObj = {};
+        updatableObj.updatedAT = RealDateToTimeStamps(new Date());
         checkAndPush(updatableObj,data);
         await dbOperation.updateSingleData(CategoryModel,{'_id':id},updatableObj,res);
     }catch(e){

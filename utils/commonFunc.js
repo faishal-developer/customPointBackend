@@ -2,12 +2,15 @@ const jwt = require('jsonwebtoken');
 const Config = require('./Config');
 
 const error = (msg="Something went wrong",status=500)=>{
+    console.log("error");
     const e = new Error(msg);
+    console.log("errror2");
     e.status = status;
     return e;
 }
 
 const createJwtToken = (user) =>{
+    console.log(Config.secret,Config.expiresIn);
     return jwt.sign(user, Config.secret, { expiresIn: Config.expiresIn });
 }
 
@@ -33,11 +36,20 @@ const RealDateToTimeStamps = (date) =>{
     return timestamps;
 }
 
+const calculateTotalprice =(products)=>{
+    let total =0;
+    products.forEach(product => {
+        total = total + Number(product?.quantity)* Number(product?.price);
+    });
+    return total;
+}
+
 module.exports = {
     error,
     createJwtToken,
     checkAndPush,
     Response,
     getRealDate,
-    RealDateToTimeStamps
+    RealDateToTimeStamps,
+    calculateTotalprice
 }

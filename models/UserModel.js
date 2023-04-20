@@ -2,6 +2,7 @@ const {model,Schema, default: mongoose} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
 //hope: save timstaps as hours
+//todo: time is not saving in timestamps
 const UserSchema = new Schema(
     {
         name:{
@@ -67,9 +68,7 @@ const UserSchema = new Schema(
         }],
     },
     {
-        timestamps: {
-            currentTime: () => Math.floor(Date.now() / 3600000)
-        }
+        timestamps: true
     }
 )
 

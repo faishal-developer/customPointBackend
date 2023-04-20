@@ -15,9 +15,8 @@ app.get('/',(_req,res)=>{
 })
 
 app.use((err,_req,res,_next)=>{
-    res.status(err.status? err.status : 500).json({message:err.message});
+    res.status(err.status? err.status : 500).json({message:err?.message ?? "Something went wrong"});
 })
-
 connectDb(process.env.MONGODB_C_URL )
     .then(()=>{
         console.log("database connected to",process.env.MONGODB_C_URL);

@@ -18,14 +18,13 @@ const TransactionSchema = Schema({
     },
     transactionDate: {
         type: Date,
-        required: true
     }
 });
 
 const AddressSchema = Schema({
     road: {
         type: String,
-        required: true,
+        // required: true,
         minlength: [3, "road should be at least 3 charecters"],
         maxlength: [25, "road should be at most 25 charecters"],
     },
@@ -49,12 +48,13 @@ const AddressSchema = Schema({
     },
     division: {
         type: String,
-        required: true,
         minlength: [3, "division should be at least 3 charecters"],
         maxlength: [15, "division should be at most 15 charecters"],
     }
 });
 
+
+//todo:add size with product. size will be an object.where we need an array of string("m-1"). Then change product amout and price validator
 const OrderSchema = Schema(
     {
         status:{
@@ -95,7 +95,7 @@ const OrderSchema = Schema(
             type: String,
             required:true,
             minlength: 9,
-            maxlength: 12,
+            maxlength: 13,
         },
         transaction: {
             type: TransactionSchema,
@@ -103,11 +103,14 @@ const OrderSchema = Schema(
         address:{
             type: AddressSchema,
             required:true
-        }
-    },
-    {
-        timestamps: {
-            currentTime: () => Math.floor(Date.now() / 3600000)
+        },
+        createdAT: {
+            type: Number,
+            required: true
+        },
+        updatedAT: {
+            type: Number,
+            required: true
         }
     }
 )

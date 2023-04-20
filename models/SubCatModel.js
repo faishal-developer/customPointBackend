@@ -20,11 +20,14 @@ const SubCategorySchema = new Schema(
             ref:schematypes.cat,
             required:true
         },
-        order_tracker: [Number]
-    },
-    {
-        timestamps: {
-            currentTime: () => Math.floor(Date.now() / 3600000)
+        order_tracker: [Number],
+        createdAT: {
+            type: Number,
+            required: true
+        },
+        updatedAT: {
+            type: Number,
+            required: true
         }
     }
 )

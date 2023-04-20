@@ -1,15 +1,16 @@
 const router = require('express').Router();
+const orderController = require('../controller/OrderController');
 
 //create a order
-router.post('/',()=>{})
+router.post('/', orderController.createOrder)
 
 //get a order
-router.get('/',()=>{})
+router.get('/:id',orderController.getSingle);
 
 //get multiple orders
-router.post('/multiple',()=>{})
+router.post('/multiple', orderController.getMultipleData)
 
 //Update Single orders
-router.post('/multiple',()=>{})
+router.patch('/:id',orderController.updateSingleOrder)
 
 module.exports = router;

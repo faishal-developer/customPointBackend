@@ -36,7 +36,7 @@ const singleUser = async(req,res,next)=>{
         const id = req.params.id;
         const {all} = req.query;
         let user = await dbOperation.findSingleDataDb(UserModel,'_id',id);
-        if(!user.email){
+        if(!user?.email){
             throw commonFunc.error('User not found',400);
         }
         user = all ? user : { _id: user._id,name:user.name, email:user.email,roles:user.roles,age:user.age,gender:user.gender};
@@ -49,9 +49,10 @@ const singleUser = async(req,res,next)=>{
 }
 
 //hope: create query by createdAt
+//todo:send total result number
 const getMultipleUser = async(req,res,next)=>{
     try{
-        if(!req.user.roles.includes('ADMIN')) throw error("User can't access",401);
+        if(!req.user?.roles?.includes('ADMIN')) throw commonFunc.error("User can't access",401);
         const { createdAt, name, email } = req.body;
         let { limit, page } = req.query;
         limit = limit ? limit : 10;
@@ -69,8 +70,9 @@ const getMultipleUser = async(req,res,next)=>{
                 query.createdAt['$lt'] = createdAt.before;
             }
         }
-        const results = await dbOperation.getMultipleData(UserModel,newQ,limit,page);
-        res.status(200).json({message:"ok",results});
+        const [results, total] = await dbOperation.getMultipleData(UserModel,newQ,limit,page);
+        console.log(results,total);
+        res.status(200).json({message:"ok",results,total});
     }catch(e){
         next(e);
     }

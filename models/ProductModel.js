@@ -4,6 +4,8 @@ const schematypes = require('./allSchemaTypes');
 //hope: array length validation
 //hope: save timstaps as minutes
 //hope: make cat_id and subcat_id required
+//todo: add discount property in percentage
+//todo: add wishlist [an array of products _id] to sea later
 const ProductSchema = new Schema(
     {
         name: {
@@ -15,8 +17,8 @@ const ProductSchema = new Schema(
         desc: {
             type: String,
             required: true,
-            minlength: [20, "Name should be at least 20 charecters"],
-            maxlength: [300, "Name should be at most 300 charecters"],
+            minlength: [20, "Description should be at least 20 charecters"],
+            maxlength: [300, "Description should be at most 300 charecters"],
         },
         images:{
             type:[String],
@@ -55,11 +57,14 @@ const ProductSchema = new Schema(
         },
         star:[Number],
         sizes:[String],
-        color:[String]
-    },
-    {
-        timestamps: {
-            currentTime: () => Math.floor(Date.now() / 3600000)
+        color:[String],
+        createdAT:{
+            type:Number,
+            required:true
+        },
+        updatedAT:{
+            type:Number,
+            required:true
         }
     }
 );

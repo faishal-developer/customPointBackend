@@ -1,5 +1,6 @@
 const ProductModel = require("../models/ProductModel");
 const dbOperation = require("../service/Operation");
+const { RealDateToTimeStamps } = require("../utils/commonFunc");
 const { error, checkAndPush, Response } = require("../utils/commonFunc");
 
 //hope: unique product identify
@@ -8,16 +9,18 @@ const { error, checkAndPush, Response } = require("../utils/commonFunc");
 const createProduct = async(req,res,next) =>{
     try{
         //check if user is admin else throw an error extracted data from req.body
-        if (!req.user.roles.includes('ADMIN')) throw error("User can't access", 401);
+        if (!req.user?.roles?.includes('ADMIN')) throw error("User can't access", 401);
         const { name, desc, images, price, cat_id, sizes, color, subCat_id } = req.body;
 
         //check uniqeness by checking exact name
         let existedProduct = await dbOperation.findSingleDataDb(ProductModel,'name',name);
-        if(existedProduct.name===name)throw error("Product allready exist",400);
+        if(existedProduct?.name===name)throw error("Product allready exist",400);
 
         //creating a data model and saved it to db
+        let time = new Date();
+        time = RealDateToTimeStamps(time);
         let product = new ProductModel({
-            name, desc, images, cat_id, price:Number(price), sizes, color, subCat_id
+            name, desc, images, cat_id, price: Number(price), sizes, color, subCat_id, createdAT:time,updatedAT:time
         });
         product = await dbOperation.saveToDb(product);
         res.status(201).json({message:'Created successfully',product});
@@ -40,8 +43,8 @@ const getSingleProduct = async(req,res,next) =>{
 //hope:find popular product
 const getMultiple = async(req,res,next) =>{
     try{
-        const { cat_ids, subcat_ids, createdAt, price,keyword } = req.body;
-        const {limit,page,ispopular,islatest} = req.query;
+        let { cat_ids, subcat_ids, createdAt, price,keyword } = req.body;
+        let {limit,page,ispopular,islatest} = req.query;
         if (!limit) {
             limit = 10;
         }
@@ -72,23 +75,25 @@ const getMultiple = async(req,res,next) =>{
         if(price){
             query.price = {};
             if(price.max){
-                query.price['$lt'] = price.maximum; 
+                query.price['$lte'] = price.max;
             }
             if(price.min){
-                query.price['$gt'] = price.min; 
+                query.price['$gte'] = price.min; 
             }
         }
+
         if (createdAt) {
-            query.createdAt = {};
+            query.createdAT = {};
             if (createdAt.after) {
-                query.createdAt['$gt'] = createdAt.after;
+                query.createdAT['$gte'] = createdAt.after;
             }
             if (createdAt.before) {
-                query.createdAt['$lt'] = createdAt.before;
+                query.createdAT['$lte'] = createdAt.before;
             }
         }
-        const products = await dbOperation.getMultipleData(ProductModel, query, limit, page);
-        Response(products,200,res);
+
+        const [products,total] = await dbOperation.getMultipleData(ProductModel, query, limit, page);
+        Response({products,total},200,res);
     }catch(e){
         next(e);
     }
@@ -115,6 +120,7 @@ const updateOne = async(req,res,next) =>{
         const updatable = req.body;
         const query = {};
         checkAndPush(query,updatable);
+        query.updatedAT = RealDateToTimeStamps(new Date());
         await dbOperation.updateSingleData(ProductModel, { '_id': id }, query, res);
         //hope: validation checking that the product updated or not
     }catch(e){

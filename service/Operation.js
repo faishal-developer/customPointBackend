@@ -12,10 +12,10 @@ const findSingleDataDb = (dataModel,key,value) =>{
 }
 
 const getMultipleData = (dataModel,query,limit,skip) =>{
-    return dataModel.find(query)
-            .skip(skip)
-            .limit(limit)
-            .exec();
+    return Promise.all([
+        dataModel.find(query).skip(skip-1).limit(limit).exec(),
+        dataModel.countDocuments(query)
+    ]);
 }
 
 const sortAndFind = (dataModel,property,limit) =>{
@@ -29,13 +29,9 @@ const updateSingleData = (dataModel,query,data,res)=>{
 
     const options = { new: true, runValidators: true };
 
-    return dataModel.findOneAndUpdate(query, data, options, (err, doc) => {
-        if (err) {
-            throw error("Failed to update",500);
-        } else {
-            Response({message:"Successfull",doc,res});
-        }
-    });
+    return dataModel.findOneAndUpdate(query, data, options)
+            .then((doc) => Response({ message: "Successfull", doc },200,res))
+            .catch(er => { throw error("Failed to update", 500) })
 }
 
 const removeSingleData = (dataModel,id)=>{

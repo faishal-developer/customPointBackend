@@ -63,7 +63,6 @@ const getMultiple = async(req,res,next) =>{
         if(ids){
             query['_id'] = {$in:ids };
         }
-
         const categories = await dbOperation.getMultipleData(CategoryModel,query,limit,page);
         Response(categories,200,res);
 

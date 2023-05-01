@@ -28,12 +28,12 @@ const AddressSchema = Schema({
         minlength: [3, "road should be at least 3 charecters"],
         maxlength: [25, "road should be at most 25 charecters"],
     },
-    city_vill: {
-        type: String,
-        required: true,
-        minlength: [3, "city/village should be at least 3 charecters"],
-        maxlength: [15, "city/village should be at most 15 charecters"],
-    },
+    // city_vill: {
+    //     type: String,
+    //     required: true,
+    //     minlength: [3, "city/village should be at least 3 charecters"],
+    //     maxlength: [15, "city/village should be at most 15 charecters"],
+    // },
     upazilla: {
         type: String,
         required: true,
@@ -46,15 +46,14 @@ const AddressSchema = Schema({
         minlength: [3, "district should be at least 3 charecters"],
         maxlength: [15, "district should be at most 15 charecters"],
     },
-    division: {
-        type: String,
-        minlength: [3, "division should be at least 3 charecters"],
-        maxlength: [15, "division should be at most 15 charecters"],
-    }
+    // division: {
+    //     type: String,
+    //     minlength: [3, "division should be at least 3 charecters"],
+    //     maxlength: [15, "division should be at most 15 charecters"],
+    // }
 });
 
 
-//todo:add size with product. size will be an object.where we need an array of string("m-1"). Then change product amout and price validator
 const OrderSchema = Schema(
     {
         status:{
@@ -79,6 +78,12 @@ const OrderSchema = Schema(
                 required: true,
                 min: 1
             },
+            sizes:[
+                {
+                    type:String,
+                    required:true
+                }
+            ],
             price: {
                 type: Number,
                 required: true,

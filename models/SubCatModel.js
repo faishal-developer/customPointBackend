@@ -12,8 +12,8 @@ const SubCategorySchema = new Schema(
         desc: {
             type: String,
             required: true,
-            minlength: [20, "Name should be at least 20 charecters"],
-            maxlength: [100, "Name should be at most 100 charecters"],
+            minlength: [10, "Name should be at least 20 charecters"],
+            maxlength: [80, "Name should be at most 100 charecters"],
         },
         cat_id:{
             type:Schema.Types.ObjectId,

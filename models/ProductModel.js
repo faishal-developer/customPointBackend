@@ -4,8 +4,6 @@ const schematypes = require('./allSchemaTypes');
 //hope: array length validation
 //hope: save timstaps as minutes
 //hope: make cat_id and subcat_id required
-//todo: add discount property in percentage
-//todo: add wishlist [an array of products _id] to sea later
 const ProductSchema = new Schema(
     {
         name: {
@@ -42,18 +40,26 @@ const ProductSchema = new Schema(
             }
         },
         cat_id:{
-            type:Schema.Types.ObjectId,
+            //todo type:Schema.Types.ObjectId,
+            type:String,
             ref:schematypes.cat,
             required:true
         },
         subCat_id:{
-            type:Schema.Types.ObjectId,
+            //todo type:Schema.Types.ObjectId,
+            type:String,
             ref:schematypes.sub_cat,
             required:true
         },
         order_track:{
             type:Number,
             default:0
+        },
+        discount:{
+            type:Number,
+            max:100,
+            min:0,
+            required: true
         },
         star:[Number],
         sizes:[String],

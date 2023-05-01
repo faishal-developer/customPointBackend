@@ -1,8 +1,7 @@
 const {model,Schema, default: mongoose} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
-//hope: save timstaps as hours
-//todo: time is not saving in timestamps
+//hope: time is  saving in timestamps
 const UserSchema = new Schema(
     {
         name:{
@@ -63,12 +62,29 @@ const UserSchema = new Schema(
         },
         //productids is user cart list saved by id
         productsIds: [{
-            type: Schema.Types.ObjectId,
-            ref: schematypes.product
+            _id:{   
+                type: Schema.Types.ObjectId,
+                ref: schematypes.product
+            },
+            sizes: [
+                {
+                    type: String,
+                    required: true
+                }
+            ],
+            quantity:{
+                type:Number,
+                required:true
+            }
         }],
-    },
-    {
-        timestamps: true
+        createdAT: {
+            type: Number,
+            required: true
+        },
+        updatedAT: {
+            type: Number,
+            required: true
+        }
     }
 )
 

@@ -44,7 +44,7 @@ const getSingleProduct = async(req,res,next) =>{
 const getMultiple = async(req,res,next) =>{
     try{
         let { cat_ids, subcat_ids, createdAt, price,keyword } = req.body;
-        let {limit,page,ispopular,islatest} = req.query;
+        let { limit, page, ispopular, islatest, discounted } = req.query;
         if (!limit) {
             limit = 10;
         }
@@ -53,11 +53,16 @@ const getMultiple = async(req,res,next) =>{
         }
         let query = {};
         if(ispopular){
-            let popularProduct = await dbOperation.sortAndFind(ProductModel,'order_track',limit);
+            let popularProduct = await dbOperation.sortAndFind(ProductModel,'order_track',limit,page);
             return Response(popularProduct,200,res);
         }
         if (islatest){
-            let latestProduct = await dbOperation.sortAndFind(ProductModel,'createdAt',limit);
+            let latestProduct = await dbOperation.sortAndFind(ProductModel,'createdAt',limit,page);
+            return Response(latestProduct,200,res);
+        }
+        if (discounted){
+            console.log('workingDiscounted')
+            let latestProduct = await dbOperation.sortAndFind(ProductModel,'discount',limit,page);
             return Response(latestProduct,200,res);
         }
         if (keyword){
@@ -68,6 +73,7 @@ const getMultiple = async(req,res,next) =>{
         }
         if(cat_ids){
             query['cat_id'] = { $in: cat_ids };
+            // query.cat_id= cat_ids;
         }
         if(subcat_ids){
             query['subCat_id'] = { $in: subcat_ids };

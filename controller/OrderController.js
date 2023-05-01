@@ -5,9 +5,8 @@ const { Response, error, RealDateToTimeStamps, calculateTotalprice } = require("
 
 //todo:make payment more secure.
 //todo: if paid mailing invoice
-//todo: api testing
-//todo: secure transaction and validate it
-//todo:get product and matching price
+//todo**: secure transaction and validate it
+//todo*:get product and matching price and update order track
 //check product price and payment amount by fetching products
 const createOrder = async(req,res,next) =>{
     try{

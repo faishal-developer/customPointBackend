@@ -3,24 +3,26 @@ const UserModel = require('../models/UserModel');
 const commonFunc = require('../utils/commonFunc');
 const { query } = require('express');
 
-//todoLater: make secure during creating admin user
+//todoLater*: make secure during creating admin user
 const postUser = async(req,res,next)=>{
     const { email, name, roles, age, gender } = req.body;
     try {
+        let time = commonFunc.RealDateToTimeStamps(new Date());
         let user = new UserModel({
             name,
             email,
             roles,
             age,
-            gender
+            gender,
+            createdAT: time,
+            updatedAT: time 
         })
         let isExisted = await dbOperation.findSingleDataDb(UserModel,'email',email)
-    
         if(isExisted){
             throw commonFunc.error('Invalid credentials',401);
         }
         user = await dbOperation.saveToDb(user);
-        user = { name: user.name, email: user.email, _id: user._id,roles:user.roles,age:user.age,gender:user.gender }
+        user = { name: user.name, email: user.email, _id: user._id, roles: user.roles, age: user.age, gender: user.gender}
         const token = commonFunc.createJwtToken({name:user.name,email:user.email,_id:user._id});
         
         return res.status(201).json({message:'User created successfully',user,token});
@@ -48,8 +50,6 @@ const singleUser = async(req,res,next)=>{
     }
 }
 
-//hope: create query by createdAt
-//todo:send total result number
 const getMultipleUser = async(req,res,next)=>{
     try{
         if(!req.user?.roles?.includes('ADMIN')) throw commonFunc.error("User can't access",401);
@@ -82,6 +82,7 @@ const getMultipleUser = async(req,res,next)=>{
 const updateUser = async(req,res,next)=>{
     const { name, phone, age, gender, productsIds } = req.body;
     const {id} = req.params;
+    let time = commonFunc.RealDateToTimeStamps(new Date());
     let query = {};
     try{
         if(!id) throw commonFunc.error("Id is not valid",400);
@@ -90,6 +91,7 @@ const updateUser = async(req,res,next)=>{
         if(phone) query.phone = phone;
         if(gender) query.gender = gender;
         if(productsIds) query.productsIds = productsIds;
+        query.updatedAT = time;
         await dbOperation.updateSingleData(UserModel, { '_id': id }, query, res);
     }catch(e){
         next(e);

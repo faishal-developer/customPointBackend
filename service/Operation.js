@@ -13,16 +13,16 @@ const findSingleDataDb = (dataModel,key,value) =>{
 
 const getMultipleData = (dataModel,query,limit,skip) =>{
     return Promise.all([
-        dataModel.find(query).skip(skip-1).limit(limit).exec(),
+        dataModel.find(query).skip((skip-1)*limit).limit(limit).exec(),
         dataModel.countDocuments(query)
     ]);
 }
 
-const sortAndFind = (dataModel,property,limit) =>{
-    return dataModel.find({})
-            .sort({ [property]: -1 }) // Sort products by order_tracker field in descending order
-            .limit(limit) // Only return the top 10 products
-            .exec();
+const sortAndFind = (dataModel,property,limit,skip=0) =>{
+    return Promise.all([
+        dataModel.find({}).sort({ [property]: -1 }).skip((skip - 1) * limit).limit(limit).exec(),
+        dataModel.countDocuments({})
+    ]);
 }
 
 const updateSingleData = (dataModel,query,data,res)=>{

@@ -1,4 +1,4 @@
-const { default: mongoose } = require("mongoose");
+const { mongoose } = require("mongoose");
 const ProductModel = require("../models/ProductModel");
 const dbOperation = require("../service/Operation");
 const { RealDateToTimeStamps } = require("../utils/commonFunc");
@@ -89,7 +89,7 @@ const getMultiple = async(req,res,next) =>{
         }
         //get multiple product by object id
         if(ids){
-            let objectIds = ids.map(id => mongoose.Types.ObjectId(id));
+            let objectIds = ids.map(id => mongoose.Types.ObjectId.createFromHexString(id));
             query['_id']= { $in: objectIds };
         }
 

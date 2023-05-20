@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const ProductModel = require("../models/ProductModel");
 const dbOperation = require("../service/Operation");
 const { RealDateToTimeStamps } = require("../utils/commonFunc");

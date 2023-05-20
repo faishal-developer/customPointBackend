@@ -43,7 +43,7 @@ const getSingleProduct = async(req,res,next) =>{
 //hope:find popular product
 const getMultiple = async(req,res,next) =>{
     try{
-        let { cat_ids, subcat_ids, createdAt, price,keyword } = req.body;
+        let { cat_ids, subcat_ids, createdAt, price,keyword,ids } = req.body;
         let { limit, page, ispopular, islatest, discounted } = req.query;
         if (!limit) {
             limit = 10;
@@ -61,7 +61,6 @@ const getMultiple = async(req,res,next) =>{
             return Response(latestProduct,200,res);
         }
         if (discounted){
-            console.log('workingDiscounted')
             let latestProduct = await dbOperation.sortAndFind(ProductModel,'discount',limit,page);
             return Response(latestProduct,200,res);
         }
@@ -86,6 +85,11 @@ const getMultiple = async(req,res,next) =>{
             if(price.min){
                 query.price['$gte'] = price.min; 
             }
+        }
+        //get multiple product by object id
+        if(ids){
+            let objectIds = ids.map(id => mongoose.Types.ObjectId(id));
+            query['_id']= { $in: objectIds };
         }
 
         if (createdAt) {

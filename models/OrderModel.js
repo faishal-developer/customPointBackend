@@ -14,7 +14,7 @@ const TransactionSchema = Schema({
     },
     paymentMethod: {
         type: String,
-        required: function () { return this.cashing_system === 'PAID' }
+        // required: function () { return this.cashing_system === 'PAID' }
     },
     transactionDate: {
         type: Date,
@@ -64,8 +64,8 @@ const OrderSchema = Schema(
         },
         user: {
             type: Schema.Types.ObjectId,
-            ref: schematypes.user,
-            required: true
+            ref: schematypes.auth,
+            // required: true
         },
         products: [{
             product: {
@@ -97,6 +97,12 @@ const OrderSchema = Schema(
             maxlength: [80, "Name should be at most 80 charecters"],
         },
         phone: {
+            type: String,
+            required:true,
+            minlength: 9,
+            maxlength: 13,
+        },
+        phone_2: {
             type: String,
             required:true,
             minlength: 9,

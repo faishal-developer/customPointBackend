@@ -1,6 +1,7 @@
 const schematypes = {
     order:'Orders',
-    user:'Users',
+    auth:'Auth',
+    profile:"Profile",
     product:'Products',
     cat:'Categories',
     sub_cat:'SubCategories'

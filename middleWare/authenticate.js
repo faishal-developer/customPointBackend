@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/UserModel');
+const User = require('../models/AuthModel');
 const Config = require('../utils/Config');
 
 async function authenticate(req,res,next){
@@ -13,9 +13,10 @@ async function authenticate(req,res,next){
         // hope:make secure jwt by changing 'secret-key'
         const decoded = jwt.verify(token, Config.secret);
         const user = await User.findById(decoded._id);
-        if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
+        //todo:rechek
+        // if (!user) {
+        //     return res.status(401).json({ message: 'Unauthorized' });
+        // }
         req.user = user;
         next();
     }catch(e){

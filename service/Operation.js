@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const { error, Response } = require("../utils/commonFunc");
 
 const saveToDb = (dataModel) =>{
@@ -11,9 +12,9 @@ const findSingleDataDb = (dataModel,key,value) =>{
     return dataModel.findOne({ [key]: value });
 }
 
-const getMultipleData = (dataModel,query,limit,skip) =>{
+const getMultipleData = (dataModel,query,limit,page) =>{
     return Promise.all([
-        dataModel.find(query).skip((skip-1)*limit).limit(limit).exec(),
+        dataModel.find(query).skip((page-1)*limit).limit(limit).exec(),
         dataModel.countDocuments(query)
     ]);
 }
@@ -31,11 +32,11 @@ const updateSingleData = (dataModel,query,data,res)=>{
 
     return dataModel.findOneAndUpdate(query, data, options)
             .then((doc) => Response({ message: "Successfull", doc },200,res))
-            .catch(er => { throw error("Failed to update", 500) })
+            .catch(er => { throw error("Failed to update", 500,er.message) })
 }
 
 const removeSingleData = (dataModel,id)=>{
-    return dataModel.findByIdAndRemove(id);
+    return dataModel.findByIdAndRemove(new mongoose.Types.ObjectId(id));
 }
 
 const removeMultiple = (dataModel,ids) =>{

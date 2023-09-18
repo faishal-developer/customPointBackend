@@ -2,15 +2,12 @@ const jwt = require('jsonwebtoken');
 const Config = require('./Config');
 
 const error = (msg="Something went wrong",status=500)=>{
-    console.log("error");
     const e = new Error(msg);
-    console.log("errror2");
     e.status = status;
     return e;
 }
 
 const createJwtToken = (user) =>{
-    console.log(Config.secret,Config.expiresIn);
     return jwt.sign(user, Config.secret, { expiresIn: Config.expiresIn });
 }
 
@@ -44,6 +41,30 @@ const calculateTotalprice =(products)=>{
     return total;
 }
 
+const  verifyAccessToken=(token)=>{
+    return jwt.verify(token,Config.secret );
+}
+
+const  verifyRefreshToken=(token)=>{
+    return jwt.verify(token,Config.jwt_refreash_secret);
+}
+
+
+const generateAccessToken = (
+  payload
+) => {
+  return jwt.sign(payload, Config.secret, {
+    expiresIn: Config.expiresIn,
+  });
+};
+
+const generateRefreashToken = (
+  payload
+) => {
+  return jwt.sign(payload, Config.jwt_refreash_secret, {
+    expiresIn: Config.jwt_refreash_expiresin,
+  });
+};
 module.exports = {
     error,
     createJwtToken,
@@ -51,5 +72,9 @@ module.exports = {
     Response,
     getRealDate,
     RealDateToTimeStamps,
-    calculateTotalprice
+    calculateTotalprice,
+    verifyAccessToken,
+    verifyRefreshToken,
+    generateAccessToken,
+    generateRefreashToken
 }

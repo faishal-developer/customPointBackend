@@ -1,35 +1,9 @@
-const {model,Schema, default: mongoose} = require('mongoose');
+const {model,Schema} = require('mongoose');
 const schematypes = require('./allSchemaTypes');
 
 //hope: time is  saving in timestamps
-const UserSchema = new Schema(
+const ProfileSchema = new Schema(
     {
-        name:{
-            type:String,
-            required:true,
-            minlength:[4,"Name should be at least 4 charecters"],
-            maxlength:[20,"Name should be at most 20 charecters"],
-        },
-        email:{
-            type:String,
-            required:true,
-            validate:{
-                validator: function(v){
-                    return /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/.test(v);
-                },
-                message:(props)=>`Invalid email ${props.value}`
-            }
-        },
-        password:{
-            type:String,
-            minlength:[6,'Password too short'],
-        },
-        roles:{
-            type:[String],
-            required:true,
-            default:['USER']
-        },
-        isDeleted:Boolean,
         phone:{
             type:String,
             minlength:9,
@@ -37,7 +11,6 @@ const UserSchema = new Schema(
         },
         age:{
             type:Number,
-            required:true,
             validate: {
                 validator: function (v) {
                     const number = Number(v);
@@ -50,16 +23,11 @@ const UserSchema = new Schema(
             type:String,
             enum:['MALE','FEMALE'],
             default:'MALE',
-            required:true
         },
         orderIds:[{
             type:Schema.Types.ObjectId,
             ref: schematypes.order
         }],
-        searchList:{
-            type: [String],
-            maxlength:[15,"SearchList length must be between 15"]
-        },
         //productids is user cart list saved by id
         productsIds: [{
             _id:{   
@@ -77,6 +45,10 @@ const UserSchema = new Schema(
                 required:true
             }
         }],
+        user_auth_id:{
+            type:Schema.Types.ObjectId,
+            ref:schematypes.auth
+        },
         createdAT: {
             type: Number,
             required: true
@@ -86,8 +58,8 @@ const UserSchema = new Schema(
             required: true
         }
     }
-)
+);
 
-let UserMoel = model(schematypes.user,UserSchema);
+let ProfileModel = model(schematypes.profile,ProfileSchema);
 
-module.exports = UserMoel;
+module.exports = ProfileModel;

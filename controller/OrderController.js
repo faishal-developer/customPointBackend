@@ -1,5 +1,6 @@
 const OrderModel = require("../models/OrderModel");
-const UserMoel = require("../models/UserModel");
+const commonFunc = require("../utils/commonFunc");
+const AuthModel = require("../models/AuthModel");
 const dbOperation = require("../service/Operation");
 const { Response, error, RealDateToTimeStamps, calculateTotalprice } = require("../utils/commonFunc");
 
@@ -64,7 +65,7 @@ const getMultipleData = async(req,res,next) =>{
         page = page ?? 1;
         if (!req.user.roles.includes('ADMIN')){
             if(req.user['_id']!== user) throw error("Illegal request",401);
-            let order = await dbOperation.getMultipleData(UserModel, {_id:{ $in: ids }}, limit, page);
+            let order = await dbOperation.getMultipleData(AuthModel, {_id:{ $in: ids }}, limit, page);
             return Response(order,200,res);
         }
         let query = {};

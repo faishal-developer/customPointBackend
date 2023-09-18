@@ -19,7 +19,7 @@ app.use(router);
 
 // todoLater:generate log file
 app.get('/',(_req,res)=>{
-    res.json({message:'server is running'});
+    res.json({message:'server is running , invalid credentials'});
 })
 
 app.use((err,_req,res)=>{

@@ -13,19 +13,18 @@ const signUp = async(req,res,next)=>{
           secure: Config.env === "production",
           httpOnly: true,
         };
-        let profile = new AuthModel({...data,createdAT:time,updatedAT:time})
+        let user = new AuthModel({...data,createdAT:time,updatedAT:time})
         let isExisted = await dbOperation.findSingleDataDb(AuthModel,'email',data.email)
-        if(isExisted){
-            throw commonFunc.error('Invalid credentials',401);
+        if(!isExisted){
+            isExisted = await dbOperation.saveToDb(user);
         }
-        profile = await dbOperation.saveToDb(profile);
-        const payload={name:profile.name,email:profile.email,_id:profile._id};
+        const payload={name:isExisted.name,email:isExisted.email,_id:isExisted._id};
 
         const token = commonFunc.createJwtToken(payload);
         const refreshToken = commonFunc.generateRefreashToken(payload);
 
         res.cookie("refreshToken", refreshToken, cookieOptions);
-        return res.status(201).json({message:'Signup completed successfully',profile,token});
+        return res.status(201).json({message:'Signup completed successfully',user:isExisted,token});
     } catch (e) {
         next(e);
     }
